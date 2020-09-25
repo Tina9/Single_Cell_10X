@@ -98,24 +98,6 @@ seeking_clusters <- function(immune.combined){
   }
 }
 
-# setwd("~/Desktop/Seurat/inte1_3/2020-08-24/")
-# control_data_dir <- "~/Desktop/Seurat/HP4540_1/"
-# control_name <- "control"
-# exp_data_dir <- "~/Desktop/Seurat/aggr2_3/"
-# exp_name <- "exp"
-# control_data <- read_data(control_data_dir, control_name)
-# exp_data <- read_data(exp_data_dir, exp_name)
-# plot_data <- rbind(control_data@meta.data, exp_data@meta.data)
-# density_plot(plot_data)
-# data_list <- list(control_data, exp_data)
-# names(data_list) <- c("control", "exp")
-# data_list <- lapply(X = data_list, FUN = prepare_data, min_feature = 200,
-#                     max_feature = 7000, mt_percent = 15)
-# inte1_3_combined_data <- data_integration(data_list)
-# seeking_clusters(inte1_3_combined_data)
-# inte1_3_cluster <- combined_data@active.ident %>% as.data.frame
-
-
 #############################################################
 setwd("~/Desktop/Seurat/inte1_aggr_2_3/2020-08-24/")
 control_data_dir <- "~/Desktop/Seurat/HP4540_1/"
