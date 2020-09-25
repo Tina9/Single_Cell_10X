@@ -3,6 +3,7 @@ library(dplyr)
 library(patchwork)
 library(cowplot)
 library(ggplot2)
+library(SingleR)
 options(scipen = 20)
 
 read_data <- function(data_dir, sample_name){
@@ -98,11 +99,19 @@ seeking_clusters <- function(immune.combined){
   }
 }
 
+#### Using SingleR to annote Clusters
+ClusterFinding <- function(ExpressData, metadata){
+  mouse_refer <- ImmGenData()
+  annote_res <- SingleR(test = ExpressData, ref = mouse_refer, labels = mouse_refer$label.main)
+  metadata$Immlabels <- as.data.frame(annote_res)$labels
+  return(metadata)
+}
+
 #############################################################
-setwd("~/Desktop/Seurat/inte1_aggr_2_3/2020-08-24/")
-control_data_dir <- "~/Desktop/Seurat/HP4540_1/"
+setwd("~/Dropbox/BRCA1-PARPi-10X/Latest Version/cluster_finding/")
+control_data_dir <- "~/Dropbox/BRCA1-PARPi-10X/Seurat_Raw_Data/HP4540_1/"
 control_name <- "control"
-exp_data_dir <- "~/Desktop/Seurat/aggr2_3/"
+exp_data_dir <- "~/Dropbox/BRCA1-PARPi-10X/Seurat_Raw_Data/aggr2_3/"
 exp_name <- "exp"
 control_data <- read_data(control_data_dir, control_name)
 exp_data <- read_data(exp_data_dir, exp_name)
@@ -115,33 +124,15 @@ data_list <- lapply(X = data_list, FUN = prepare_data, min_feature = 200,
 aggr1_2_3_combined_data <- data_integration(data_list)
 seeking_clusters(aggr1_2_3_combined_data)
 
+### Get cell cluster
+metadata <- aggr1_2_3_combined_data@meta.data %>% as.data.frame
+### Get Expression Values
+ExpressData <- GetAssayData(aggr1_2_3_combined_data[["integrated"]], slot = "data")
 
-####################### Cluster Change Identification ################################
-cell_stat <- aggr1_2_3_combined_data@meta.data
+### Annotate Cell Clusters
+MetaData <- ClusterFinding(ExpressData, metadata)
 
-######## Plot using identity number
-plot_stat <- cell_stat %>%
-  group_by(orig.ident) %>%
-  count(seurat_clusters) %>%
-  as.data.frame
-
-library(RColorBrewer)
-nb.cols <- 22
-mycolors <- colorRampPalette(brewer.pal(8, "Paired"))(nb.cols)
-p1 <- ggplot(data = plot_stat, aes(x = orig.ident, y = n, fill = seurat_clusters)) +
-  geom_bar(stat = "identity") +
-  scale_fill_manual(values = mycolors) +
-  theme_bw()
-
-############ Plot using percentage
-plot_per_stat <- plot_stat %>%
-  group_by(orig.ident) %>%
-  mutate(per = (n/sum(n) * 100))
-p2 <- ggplot(data = plot_per_stat, aes(x = seurat_clusters, y = per, fill = orig.ident)) +
-  geom_bar(stat = "identity") +
-  scale_fill_manual(values = c("darkblue", "red")) +
-  theme_classic()
-
-p1 + p2
-write.table(plot_per_stat, file = "~/Desktop/stat.txt", row.names = F, sep = "\t", quote = F)
-####################### Cluster Change Identification ################################
+### Keep data for next usuage ##############
+save(aggr1_2_3_combined_data, file = "aggr1_2_3_combined_data.RData")
+write.table(MetaData, file = "aggr1_2_3_combined_metadata.txt", sep = "\t", quote = F)
+write.table(as.data.frame(ExpressData), file = "aggr1_2_3_features.csv", sep = ",", quote = F)
