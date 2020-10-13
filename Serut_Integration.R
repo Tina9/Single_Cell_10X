@@ -3,11 +3,11 @@ library(Seurat)
 library(patchwork)
 
 # Load the PBMC dataset
-S1.data <- Read10X(data.dir = "~/Downloads/Sample1/")
+S1.data <- Read10X(data.dir = "~/Dropbox/BRCA1-PARPi-10X/Seurat_Raw_Data/HP4540_1/")
 S1 <- CreateSeuratObject(counts = S1.data, project = "S1", min.cells = 3, min.features = 200)
 
 # Load the PBMC dataset
-S2.data <- Read10X(data.dir = "~/Downloads/Sample2/")
+S2.data <- Read10X(data.dir = "~/Dropbox/BRCA1-PARPi-10X/Seurat_Raw_Data/aggr2_3/")
 S2 <- CreateSeuratObject(counts = S2.data, project = "S2", min.cells = 3, min.features = 200)
 
 pancreas.list <- list()
