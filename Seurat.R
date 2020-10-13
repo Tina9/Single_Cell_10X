@@ -108,6 +108,8 @@ ClusterFinding <- function(ExpressData, metadata){
 }
 
 #############################################################
+############ Analysis for HP4540 ############################
+#############################################################
 setwd("~/Dropbox/BRCA1-PARPi-10X/Latest Version/cluster_finding/")
 control_data_dir <- "~/Dropbox/BRCA1-PARPi-10X/Seurat_Raw_Data/HP4540_1/"
 control_name <- "control"
@@ -136,3 +138,99 @@ MetaData <- ClusterFinding(ExpressData, metadata)
 save(aggr1_2_3_combined_data, file = "aggr1_2_3_combined_data.RData")
 write.table(MetaData, file = "aggr1_2_3_combined_metadata.txt", sep = "\t", quote = F)
 write.table(as.data.frame(ExpressData), file = "aggr1_2_3_features.csv", sep = ",", quote = F)
+
+#############################################################
+############ Analysis for HP4313 ############################
+#############################################################
+setwd("~/Dropbox/BRCA1-PARPi-10X/Latest Version/cluster_finding/HP4313/")
+control_data_dir <- "~/Dropbox/BRCA1-PARPi-10X/Seurat_Raw_Data/HP4313Pr/"
+control_name <- "control"
+exp_data_dir <- "~/Dropbox/BRCA1-PARPi-10X/Seurat_Raw_Data/HP4313Re/"
+exp_name <- "exp"
+control_data <- read_data(control_data_dir, control_name)
+exp_data <- read_data(exp_data_dir, exp_name)
+plot_data <- rbind(control_data@meta.data, exp_data@meta.data)
+density_plot(plot_data)
+data_list <- list(control_data, exp_data)
+names(data_list) <- c("control", "exp")
+data_list <- lapply(X = data_list, FUN = prepare_data, min_feature = 200,
+                    max_feature = 7000, mt_percent = 15)
+aggr1_2_3_combined_data <- data_integration(data_list)
+seeking_clusters(aggr1_2_3_combined_data)
+
+### Get cell cluster
+metadata <- aggr1_2_3_combined_data@meta.data %>% as.data.frame
+### Get Expression Values
+ExpressData <- GetAssayData(aggr1_2_3_combined_data[["integrated"]], slot = "data")
+
+### Annotate Cell Clusters
+MetaData <- ClusterFinding(ExpressData, metadata)
+
+### Keep data for next usuage ##############
+save(aggr1_2_3_combined_data, file = "HP4313_combined_data.RData")
+write.table(MetaData, file = "HP4313_combined_metadata.txt", sep = "\t", quote = F)
+write.table(as.data.frame(ExpressData), file = "HP4313_features.csv", sep = ",", quote = F)
+
+#############################################################
+############ Analysis for HP4313 ############################
+#############################################################
+setwd("~/Dropbox/BRCA1-PARPi-10X/Latest Version/cluster_finding/HP4313/")
+control_data_dir <- "~/Dropbox/BRCA1-PARPi-10X/Seurat_Raw_Data/HP4313Pr/"
+control_name <- "control"
+exp_data_dir <- "~/Dropbox/BRCA1-PARPi-10X/Seurat_Raw_Data/HP4313Re/"
+exp_name <- "exp"
+control_data <- read_data(control_data_dir, control_name)
+exp_data <- read_data(exp_data_dir, exp_name)
+plot_data <- rbind(control_data@meta.data, exp_data@meta.data)
+density_plot(plot_data)
+data_list <- list(control_data, exp_data)
+names(data_list) <- c("control", "exp")
+data_list <- lapply(X = data_list, FUN = prepare_data, min_feature = 200,
+                    max_feature = 7000, mt_percent = 15)
+combined_data <- data_integration(data_list)
+seeking_clusters(combined_data)
+
+### Get cell cluster
+metadata <- combined_data@meta.data %>% as.data.frame
+### Get Expression Values
+ExpressData <- GetAssayData(combined_data[["integrated"]], slot = "data")
+
+### Annotate Cell Clusters
+MetaData <- ClusterFinding(ExpressData, metadata)
+
+### Keep data for next usuage ##############
+save(combined_data, file = "HP4313_combined_data.RData")
+write.table(MetaData, file = "HP4313_combined_metadata.txt", sep = "\t", quote = F)
+write.table(as.data.frame(ExpressData), file = "HP4313_features.csv", sep = ",", quote = F)
+
+#############################################################
+############ Analysis for HP4568 ############################
+#############################################################
+setwd("~/Dropbox/BRCA1-PARPi-10X/Latest Version/cluster_finding/HP4568/")
+control_data_dir <- "~/Dropbox/BRCA1-PARPi-10X/Seurat_Raw_Data/HP4568Pr/"
+control_name <- "control"
+exp_data_dir <- "~/Dropbox/BRCA1-PARPi-10X/Seurat_Raw_Data/HP4568Re/"
+exp_name <- "exp"
+control_data <- read_data(control_data_dir, control_name)
+exp_data <- read_data(exp_data_dir, exp_name)
+plot_data <- rbind(control_data@meta.data, exp_data@meta.data)
+density_plot(plot_data)
+data_list <- list(control_data, exp_data)
+names(data_list) <- c("control", "exp")
+data_list <- lapply(X = data_list, FUN = prepare_data, min_feature = 200,
+                    max_feature = 7000, mt_percent = 15)
+combined_data <- data_integration(data_list)
+seeking_clusters(combined_data)
+
+### Get cell cluster
+metadata <- combined_data@meta.data %>% as.data.frame
+### Get Expression Values
+ExpressData <- GetAssayData(combined_data[["integrated"]], slot = "data")
+
+### Annotate Cell Clusters
+MetaData <- ClusterFinding(ExpressData, metadata)
+
+### Keep data for next usuage ##############
+save(combined_data, file = "HP4568_combined_data.RData")
+write.table(MetaData, file = "HP4568_combined_metadata.txt", sep = "\t", quote = F)
+write.table(as.data.frame(ExpressData), file = "HP4568_features.csv", sep = ",", quote = F)
